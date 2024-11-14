@@ -1,0 +1,16 @@
+server {
+    listen 80;
+    server_name loki.hasso.tech;
+
+    # If Cloudflare sends requests via HTTPS, but the server is on HTTP:
+    location / {
+	auth_basic "AUTH";
+	auth_basic_user_file /home/mvhasso/loki/.htpasswd;
+	proxy_pass http://localhost:3100;  # Loki is running locally on port 3100
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+

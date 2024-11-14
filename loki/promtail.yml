@@ -1,0 +1,16 @@
+server:
+  http_listen_port: 3101
+  grpc_listen_port: 0       # Disable gRPC if not needed
+
+positions:
+  filename: /tmp/positions.yaml  # File for storing log position information
+  batchwait: 2s  # Increase the timeout between packets
+  batchsize: 10000  # Decrease the packet size
+
+clients:
+  - url: "http://loki:3100/loki/api/v1/push"  # The address of your Loki for sending logs
+
+scrape_configs:
+  # We'll just add an empty configuration to prevent log collection
+  - job_name: 'no-logs'
+    static_configs: []

@@ -1,0 +1,57 @@
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+  http_listen_address: 0.0.0.0
+
+common:
+  ring:
+    instance_addr: 127.0.0.1
+    kvstore:
+      store: inmemory
+  replication_factor: 1
+  path_prefix: /tmp/loki
+
+query_range:
+  results_cache:
+    cache:
+      embedded_cache:
+        enabled: true
+        max_size_mb: 100
+
+schema_config:
+  configs:
+  - from: 2020-05-15
+    store: tsdb
+    object_store: filesystem
+    schema: v13
+    index:
+      prefix: index_
+      period: 24h
+
+storage_config:
+  filesystem:
+    directory: /tmp/loki/chunks
+
+compactor:
+  working_directory: /tmp/loki/compactor
+  shared_store: filesystem
+  retention_enabled: true
+  
+limits_config:
+  retention_period: 168h
+  enforce_metric_name: false
+  reject_old_samples: true
+  reject_old_samples_max_age: 168h  # Reject logs older than 7 days
+  max_cache_freshness_per_query: 10m
+  split_queries_by_interval: 15m  # Split queries into 15-minute intervals for more efficient handling of large logs
+  per_stream_rate_limit: 512M  # Limit the write speed to 512 MB/sec
+  per_stream_rate_limit_burst: 1024M  # Burst write up to 1 GB in case of high load
+  cardinality_limit: 200000  # Maximum number of unique labels per series
+  ingestion_burst_size_mb: 1000  # Ingestion burst size (1000 MB)
+  ingestion_rate_mb: 10000  # Ingestion rate limit (10 GB/sec)
+  max_entries_limit_per_query: 1000000  # Maximum number of entries per query (1 million)
+  max_label_value_length: 20480  # Maximum label value length (20,480 characters)
+  max_label_name_length: 10240  # Maximum label name length (10,240 characters)
+  max_label_names_per_series: 300  # Maximum number of labels per series
+
